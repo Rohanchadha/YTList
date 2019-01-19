@@ -191,23 +191,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         byte[] ba = bao.toByteArray();
         ba1 = Base64.encodeToString(ba, Base64.DEFAULT);
         AsyncTask<Void, Void, List<String>> resutls = new uploadToServer(this).execute();
-        // Upload image to server
-//        ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-//        nameValuePairs.add(new BasicNameValuePair("base64", ba1));
-//        nameValuePairs.add(new BasicNameValuePair("ImageName", System.currentTimeMillis() + ".jpg"));
-//        try {
-//            HttpClient httpclient = new DefaultHttpClient();
-//            HttpPost httppost = new HttpPost(URL);
-//            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-//            HttpResponse response = httpclient.execute(httppost);
-//            String st = EntityUtils.toString(response.getEntity());
-//            Log.v("log_tag", "In the try Loop" + st);
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            Log.v("log_tag", "Error in http connection " + e.toString());
-//        }
-        //new uploadToServer().execute();
         return null;
 
     }

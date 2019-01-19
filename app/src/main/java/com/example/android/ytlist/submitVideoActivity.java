@@ -1,21 +1,38 @@
 package com.example.android.ytlist;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by My sister is awesome on 1/19/2019.
@@ -29,8 +46,12 @@ public class submitVideoActivity extends Activity implements View.OnClickListene
     private Uri cropUri;
     //keep track of cropping intent
     final int PIC_CROP = 2;
+
     //edittext for getting the tags input
     //EditText editTextTags;
+    public static String URL = "http://10.105.24.161:8080/store";
+    private String ba1;
+    private String youTubeId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +62,9 @@ public class submitVideoActivity extends Activity implements View.OnClickListene
         Button submitImage = (Button)findViewById(R.id.submit_image);
         //handle button clicks
         submitImage.setOnClickListener(this);
+        Button submitVideo = (Button)findViewById(R.id.button);
+        //handle button clicks
+        submitVideo.setOnClickListener(this);
     }
 
     public void onClick(View v) {
@@ -61,6 +85,13 @@ public class submitVideoActivity extends Activity implements View.OnClickListene
                 Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
                 toast.show();
             }
+        } else if (v.getId() == R.id.button) {
+            TextView videoUrl = (TextView)findViewById(R.id.editText);
+            youTubeId = videoUrl.getText().toString();
+            Bitmap thePic = decodeUriAsBitmap(cropUri);
+            //get the cropped bitmap
+            //Bitmap thePic = extras.getParcelable("data");//retrieve a reference to the ImageView
+            List<String> videoIds = upload(thePic);
         }
     }
 
@@ -77,6 +108,7 @@ public class submitVideoActivity extends Activity implements View.OnClickListene
                 //get the returned data
                 Bundle extras = data.getExtras();
                 Uri croppedUri = data.getData();
+                cropUri = croppedUri;
                 Bitmap thePic = decodeUriAsBitmap(croppedUri);
                 //get the cropped bitmap
                 //Bitmap thePic = extras.getParcelable("data");//retrieve a reference to the ImageView
@@ -154,6 +186,62 @@ public class submitVideoActivity extends Activity implements View.OnClickListene
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
         return byteArrayOutputStream.toByteArray();
+    }
+
+    private List<String> upload(Bitmap bitmap) {
+
+        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, bao);
+        byte[] ba = bao.toByteArray();
+        ba1 = Base64.encodeToString(ba, Base64.DEFAULT);
+        AsyncTask<Void, Void, List<String>> resutls = new uploadToServer(this).execute();
+        return null;
+
+    }
+
+    public class uploadToServer extends AsyncTask<Void, Void, List<String>> {
+
+        private Activity activity;
+
+        public uploadToServer(Activity activity) {
+            this.activity = activity;
+        }
+
+        private ProgressDialog pd = new ProgressDialog(submitVideoActivity.this);
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Wait image uploading!");
+            pd.show();
+        }
+
+        @Override
+        protected List<String> doInBackground(Void... params) {
+
+            ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+            nameValuePairs.add(new BasicNameValuePair("base64", ba1));
+            nameValuePairs.add(new BasicNameValuePair("url", youTubeId));
+            List<String> linesList = new ArrayList<>();
+            try {
+                HttpClient httpclient = new DefaultHttpClient();
+                HttpPost httppost = new HttpPost(URL);
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                HttpResponse response = httpclient.execute(httppost);
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.v("log_tag", "Error in http connection " + e.toString());
+            }
+
+            return null;
+
+        }
+
+        protected void onPostExecute(List<String> result) {
+            super.onPostExecute(result);
+            pd.hide();
+            pd.dismiss();
+        }
     }
 
 }
