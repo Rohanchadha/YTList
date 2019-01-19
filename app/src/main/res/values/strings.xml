@@ -3,4 +3,7 @@
     <string name="intro">Capture a picture to crop!</string>
     <string name="picture">Picture</string>
     <string name="capture">Launch Camera</string>
+    <string name="captureSubmit">Capture Text</string>
+    <string name="submitIntro">Press below button to capture text from your page.</string>
+    <string name="submitPicture">Submitted Picture</string>
 </resources>

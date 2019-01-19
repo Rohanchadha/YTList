@@ -7,7 +7,6 @@
     tools:context=".MainActivity">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
@@ -20,28 +19,38 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="3dp"
-            android:text="@string/intro"
+            android:text="@string/submitIntro"
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/capture_btn"
+            android:id="@+id/submit_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/capture" />
+            android:text="@string/captureSubmit" />
 
         <ImageView
-            android:id="@+id/picture"
+            android:id="@+id/picture_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:background="@drawable/pic_border"
-            android:contentDescription="@string/picture" />
+            android:background="@drawable/pic_border_2"
+            android:contentDescription="@string/submitPicture" />
+
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Enter Video URL" />
 
         <Button
-            android:id="@+id/submit_btn"
-            android:layout_width="142dp"
+            android:id="@+id/button"
+            android:layout_width="125dp"
             android:layout_height="wrap_content"
             android:text="Submit Video" />
+
+
     </LinearLayout>
 
     <!--<TextView-->

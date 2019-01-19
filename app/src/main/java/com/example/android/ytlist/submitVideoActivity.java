@@ -14,17 +14,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.Map;
 
+/**
+ * Created by My sister is awesome on 1/19/2019.
+ */
 
-public class MainActivity extends Activity implements View.OnClickListener {
-
+public class submitVideoActivity extends Activity implements View.OnClickListener{
     //keep track of camera capture intent
     final int CAMERA_CAPTURE = 1;
     //captured picture uri
@@ -39,26 +36,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.submit_video);
         //retrieve a reference to the UI button
-        Button captureBtn = (Button)findViewById(R.id.capture_btn);
+        Button submitImage = (Button)findViewById(R.id.submit_image);
         //handle button clicks
-        captureBtn.setOnClickListener(this);
-
-        Button submitBtn = (Button)findViewById(R.id.submit_btn);
-        //handle button clicks
-        submitBtn.setOnClickListener(this);
-
-
+        submitImage.setOnClickListener(this);
     }
 
     public void onClick(View v) {
-        if (v.getId() == R.id.capture_btn) {
+        if (v.getId() == R.id.submit_image) {
             try {
                 //use standard intent to capture an image
                 Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 ContentValues values = new ContentValues();
-                values.put(MediaStore.Images.Media.TITLE, "bookImage");
+                values.put(MediaStore.Images.Media.TITLE, "submittedImage");
                 picUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
                 captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, picUri);
@@ -70,10 +61,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
                 toast.show();
             }
-        }
-        if (v.getId() == R.id.submit_btn) {
-            Intent submitMenuIntent = new Intent(this, submitVideoActivity.class);
-            startActivity(submitMenuIntent);
         }
     }
 
@@ -93,7 +80,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 Bitmap thePic = decodeUriAsBitmap(croppedUri);
                 //get the cropped bitmap
                 //Bitmap thePic = extras.getParcelable("data");//retrieve a reference to the ImageView
-                ImageView picView = (ImageView)findViewById(R.id.picture);
+                ImageView picView = (ImageView)findViewById(R.id.picture_2);
                 //display the returned cropped image
                 picView.setImageBitmap(thePic);
                 //uploadBitmap(thePic);
@@ -162,15 +149,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
     }
 
-    /*
-     * The method is taking Bitmap as an argument
-     * then it will return the byte[] array for the given bitmap
-     * and we will send this array to the server
-     * here we are using PNG Compression with 80% quality
-     * you can give quality between 0 to 100
-     * 0 means worse quality
-     * 100 means best quality
-     * */
+
     public byte[] getFileDataFromDrawable(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);

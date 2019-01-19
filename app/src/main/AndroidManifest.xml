@@ -23,6 +23,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".VideoActivity" />
+        <activity android:name=".submitVideoActivity" />
     </application>
 
 </manifest>
